@@ -69,7 +69,7 @@ The API documentation is automatically generated using Swagger. To access it:
 
 ### Endpoints documented in Swagger:
 
-#### User Management:
+###### User Management:
 
 ● `POST /register`: Register a new user
 
