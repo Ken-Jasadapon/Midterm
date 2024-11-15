@@ -6,59 +6,59 @@ This is a Node.js project using Express.js for building RESTful APIs. The projec
 
 ## Features
 
-`User Registration:` Register a new user with hashed password.
+`User Registration`: Register a new user with hashed password.
 
-`Login:` JWT-based authentication for user login.
+`Login`: JWT-based authentication for user login.
 
-`Change Password:` Allow users to change their password.
+`Change Password`: Allow users to change their password.
 
-`Request a New OTP:` Generate a new OTP for user login.
+`Request a New OTP`: Generate a new OTP for user login.
 
-`View Products:` Display a list of available products.
+`View Products`: Display a list of available products.
 
-`Add Products:` Admin users can add new products (email notification sent to users with notifications enabled).
+`Add Products`: Admin users can add new products (email notification sent to users with notifications enabled).
 
-`Edit Products:` Admin users can edit existing products.
+`Edit Products`: Admin users can edit existing products.
 
-`Delete Products:` Admin users can delete products.
+`Delete Products`: Admin users can delete products.
 
-`Set Notification:` Preferences: Users can enable or disable email notifications for product updates.
+`Set Notification`: Preferences: Users can enable or disable email notifications for product updates.
 
-`Carts:`
+`Carts`:
 
-`Add Products to Cart:` Users can add products to their cart.
+`Add Products to Cart`: Users can add products to their cart.
 
-`Edit Products in Cart:` Users can update product quantities in the cart.
+`Edit Products in Cart`: Users can update product quantities in the cart.
 
-`Delete Products from Cart:` Users can remove products from their cart.
+`Delete Products from Cart`: Users can remove products from their cart.
 
-`View Products in Cart:` Display the list of products in the user's cart.
+`View Products in Cart`: Display the list of products in the user's cart.
 
-`Authentication:` Secure login using JWT.
+`Authentication`: Secure login using JWT.
 
-`Authorization:` Role-based access control (Admin, Employee, Customer) to restrict access to certain endpoints.
+`Authorization`: Role-based access control (Admin, Employee, Customer) to restrict access to certain endpoints.
 
 ## Technologies
 
-`Node.js:` JavaScript runtime for the backend.
+`Node.js`: JavaScript runtime for the backend.
 
-`Express.js:` Web framework for building APIs.
+`Express.js`: Web framework for building APIs.
 
-`MySQL:` Database for storing user and product information.
+`MySQL`: Database for storing user and product information.
 
-`JWT:` Token-based authentication.
+`JWT`: Token-based authentication.
 
-`Bcrypt:` Password hashing.
+`Bcrypt`: Password hashing.
 
-`Nodemailer:` For sending OTP emails and product notifications.
+`Nodemailer`: For sending OTP emails and product notifications.
 
-`Speakeasy:` For OTP generation and verification.
+`Speakeasy`: For OTP generation and verification.
 
-`Rate Limiting:` To prevent abuse using express-rate-limit.
+`Rate Limiting`: To prevent abuse using express-rate-limit.
 
-`dotenv:` For managing environment variables.
+`dotenv`: For managing environment variables.
 
-`Swagger:` API documentation.
+`Swagger`: API documentation.
 
 ## API Documentation (Swagger)
 The API documentation is automatically generated using Swagger. To access it:
@@ -71,7 +71,7 @@ Endpoints documented in Swagger:
 
 `POST /register`: Register a new user
 
-`POST /login`: Login and get JWT Token
+`POST /login`: Login
 
 POST /otp/send: Generate OTP for login
 
