@@ -69,7 +69,7 @@ The API documentation is automatically generated using Swagger. To access it:
 
 Endpoints documented in Swagger:
 
-POST /register: Register a new user
+`POST` /register: Register a new user
 
 POST /login: Login and get JWT Token
 
