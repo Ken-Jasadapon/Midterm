@@ -24,7 +24,7 @@ This is a Node.js project using Express.js for building RESTful APIs. The projec
 
 `Set Notification:` Preferences: Users can enable or disable email notifications for product updates.
 
-`Carts:`.
+`Carts:`
 
 `Add Products to Cart:` Users can add products to their cart.
 
@@ -60,7 +60,7 @@ This is a Node.js project using Express.js for building RESTful APIs. The projec
 
 `Swagger:` API documentation.
 
-# API Documentation (Swagger)
+## API Documentation (Swagger)
 The API documentation is automatically generated using Swagger. To access it:
 
 1. After running the app, open your browser and visit http://localhost:3000/docs
