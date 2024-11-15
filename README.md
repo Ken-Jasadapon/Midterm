@@ -69,33 +69,41 @@ The API documentation is automatically generated using Swagger. To access it:
 
 ### Endpoints documented in Swagger:
 
-###### User Management:
+#### User Management:
 
 ● `POST /register`: Register a new user
 
 ● `POST /login`: Login and get JWT Token
 
-POST /otp/send: Generate OTP for login
+● `POST /changePass`: Change password (requires admin, employee, or customer authorization)
 
-POST /otp/verify: Verify OTP and authenticate the user
+● `POST /requestOTP`: Request a new OTP (limited by rate limiter)
 
-POST /products: Add a new product
+#### Product Management:
 
-GET /products: View all products
+● `GET /products`: View all products (requires admin, employee, or customer authorization)
 
-PUT /products/:id: Edit an existing product
+● `POST /products`: Add a new product (requires admin or employee authorization)
 
-DELETE /products/:id: Delete a product
+● `PUT /products/:ProId`: Edit an existing product by ID (requires admin or employee authorization)
 
-GET /cart: View products in cart
+● `DELETE /products/:ProId`: Delete a product by ID (requires admin or employee authorization)
 
-POST /cart: Add products to cart
+#### Notification Settings:
 
-PUT /cart/:id: Edit products in cart
+● `POST /setNotification`: Set or update notification preferences
 
-DELETE /cart/:id: Remove products from cart
+#### Cart Management:
 
-POST /notifications: Set or update notification preferences
+● `POST /carts`: Create a new shopping cart
+
+● `POST /carts/:cartId/items`: Add an item to a specific cart
+
+● `PUT /carts/:cartId/items/:itemId`: Edit an item in a cart by item ID
+
+● `DELETE /carts/:cartId/items/:itemId`: Remove an item from a cart by item ID
+
+● `GET /carts/:cartId/item`: View items in a specific cart
 
 You can also use Swagger UI to interact with these endpoints and test the requests directly from the documentation page.
 
