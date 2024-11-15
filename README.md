@@ -71,9 +71,9 @@ Endpoints documented in Swagger:
 
 ● User Management:
 
-● `POST /register`: Register a new user
+   ● `POST /register`: Register a new user
 
-● `POST /login`: Login and get JWT Token
+   ● `POST /login`: Login and get JWT Token
 
 POST /otp/send: Generate OTP for login
 
