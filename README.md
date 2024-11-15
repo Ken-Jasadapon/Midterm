@@ -67,16 +67,13 @@ The API documentation is automatically generated using Swagger. To access it:
 
 2. You will see the API documentation where you can view all the available endpoints, request/response formats, and test them directly.
 
-Endpoints documented in Swagger:
+### Endpoints documented in Swagger:
 
-```
-● User Management:
+#### User Management:
 
-    ● `POST /register`: Register a new user
+● `POST /register`: Register a new user
 
-    ● `POST /login`: Login and get JWT Token
-
-```
+● `POST /login`: Login and get JWT Token
 
 POST /otp/send: Generate OTP for login
 
