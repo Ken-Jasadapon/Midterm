@@ -69,18 +69,31 @@ The API documentation is automatically generated using Swagger. To access it:
 
 Endpoints documented in Swagger:
 
-POST /users: Register a new user
+POST /register: Register a new user
+
 POST /login: Login and get JWT Token
+
 POST /otp/send: Generate OTP for login
+
 POST /otp/verify: Verify OTP and authenticate the user
+
 POST /products: Add a new product
+
 GET /products: View all products
+
 PUT /products/:id: Edit an existing product
+
 DELETE /products/:id: Delete a product
+
 GET /cart: View products in cart
+
 POST /cart: Add products to cart
+
 PUT /cart/:id: Edit products in cart
+
 DELETE /cart/:id: Remove products from cart
+
 POST /notifications: Set or update notification preferences
+
 You can also use Swagger UI to interact with these endpoints and test the requests directly from the documentation page.
 
