@@ -26,13 +26,13 @@ This is a Node.js project using Express.js for building RESTful APIs. The projec
 
 `Carts:`.
 
-    `Add Products to Cart:` Users can add products to their cart.
+`Add Products to Cart:` Users can add products to their cart.
 
-    `Edit Products in Cart:` Users can update product quantities in the cart.
+`Edit Products in Cart:` Users can update product quantities in the cart.
 
-    `Delete Products from Cart:` Users can remove products from their cart.
+`Delete Products from Cart:` Users can remove products from their cart.
 
-    `View Products in Cart:` Display the list of products in the user's cart.
+`View Products in Cart:` Display the list of products in the user's cart.
 
 `Authentication:` Secure login using JWT.
 
