@@ -1,0 +1,1342 @@
+openapi: 3.0.0
+info:
+  title: User, Product and Cart Management API
+  version: 1.0.0
+  description: This API allows for user management, product management, and cart functionality.
+servers:
+  - url: http://localhost:3000
+
+components:
+  securitySchemes:
+    authorization:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - authorization: []
+
+paths:
+  /register:
+    post:
+      summary: Register a new user
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+                email:
+                  type: string
+                role:
+                  type: string
+            example:
+              value_request:
+                value:
+                  username: "demo"
+                  password: "demo"
+                  email: "admin@demo.com"
+                  role: "admin"
+              missing_field:
+                value:
+                  username: "demo"
+                  email: "admin@demo.com"
+                  role: "admin"
+
+      responses:
+        "201":
+          description: User registration successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User registration successful"
+                  token:
+                    type: string
+                    example: "jwt.token.here"
+        "400":
+          description: Bad request or invalid role
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              examples:
+                missing_fields:
+                  summary: missing fields
+                  value:
+                    message: "Username, password, email or role is required"
+                invalid_role:
+                  summary: Invalid role
+                  value:
+                    message: "Invalid role"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Internal server error"
+
+  /login:
+    post:
+      summary: Login a user
+      security:
+        - authorization: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+                otp:
+                  type: string
+            example:
+              without_otp:
+                summary: Login without OTP
+                value:
+                  username: "admin"
+                  password: "admin"
+                  otp: ""
+              with_otp:
+                summary: Login with OTP
+                value:
+                  username: "admin"
+                  password: "admin"
+                  otp: "123456"
+      responses:
+        "200":
+          description: Login successful or OTP sent
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              examples:
+                otp_sent:
+                  summary: Otp sent
+                  value:
+                    message: "OTP sent to your email. Please verify"
+                login_successful:
+                  summary: Login successful
+                  value:
+                    message: "Login successful"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "Username or password is required"
+        "401":
+          description: Unauthorized, Invalid password, Invalid OTP or No token provided
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              examples:
+                unauthorized:
+                  summary: Unauthorized
+                  value:
+                    message: "Unauthorized"
+                token_expired:
+                  summary: Token expired
+                  value:
+                    message: Token expired
+                no_token:
+                  summary: No token provided
+                  value:
+                    message: "No token provided"
+                invalid_password:
+                  summary: Invalid password
+                  value:
+                    message: "Invalid password"
+                invalid_otp:
+                  summary: Invalid OTP
+                  value:
+                    message: "Invalid OTP"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "User not found"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              examples:
+                email_error:
+                  summary: Email Sending error
+                  value:
+                    message: "Error sending email"
+                server_error:
+                  summary: Internal server error
+                  value:
+                    message: "Internal server error"
+
+  /changePass:
+    post:
+      summary: Change user password
+      security:
+        - authorization: []
+      requestBody:
+        required": true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                oldPassword:
+                  type: string
+                  description: The current password of the user
+                newPassword:
+                  type: string
+                  description: The new password to set for the user
+            example:
+              oldPassword: "oldPassword123"
+              newPassword: "newPassword123"
+      responses:
+        "200":
+          description: Password changed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Password changed successfully"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Please enter both old and new password."
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              examples:
+                unauthorized:
+                  summary: Unauthorized
+                  value:
+                    message: "Unauthorized"
+                token_expired:
+                  summary: Token expired
+                  value:
+                    message: Token expired
+                no_token:
+                  summary: No token provided
+                  value:
+                    message: "No token provided"
+                invalid_password:
+                  summary: invalid password
+                  value:
+                    message: "Invalid password"
+                user_not_found:
+                  summary: User data not found
+                  value:
+                    message: "User data not found"
+        "403":
+          description: Forbidden - Access Denied
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You do not have permission to access."
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User not found"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              examples:
+                server_error:
+                  summary: Internal server error
+                  value:
+                    message: "Internal server error"
+                error_chang:
+                  summary: Error changing password
+                  value:
+                    message: "Error changing password"
+
+  /requestOTP:
+    post:
+      summary: Request OTP for a user
+      security:
+        - authorization: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: "admin"
+                password:
+                  type: string
+                  example: "admin123"
+      responses:
+        "200":
+          description: OTP sent successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "OTP sent to your email"
+        "400":
+          description: Bad request, missing username or password
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "Username or password is required"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              examples:
+                unauthorized:
+                  summary: Unauthorized
+                  value:
+                    message: "Unauthorized"
+                token_expired:
+                  summary: Token expired
+                  value:
+                    message: Token expired
+                no_token:
+                  summary: No token provided
+                  value:
+                    message: "No token provided"
+                invalid_password:
+                  summary: invalid password
+                  value:
+                    message: "Invalid password"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "User not found"
+        "429":
+          description: Too many requests
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "Too many OTP requests, please try again later"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              examples:
+                email_error:
+                  summary: Email Sending error
+                  value:
+                    message: "Error sending email"
+                server_error:
+                  summary: Internal server error
+                  value:
+                    message: "Internal server error"
+
+  /products:
+    get:
+      summary: Retrieve a list of products
+      description: Fatches product information including name, description, price and quantity.
+      security:
+        - authorization: []
+      responses:
+        "200":
+          description: A list of products
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  products:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        product_name:
+                          type: string
+                          example: "Sample Product"
+                        description:
+                          type: string
+                          example: "A description of the product."
+                        price:
+                          type: number
+                          format: float
+                          example: 99.99
+                        quantity:
+                          type: integer
+                          example: 50
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              examples:
+                unauthorized:
+                  summary: Unauthorized
+                  value:
+                    message: "Unauthorized"
+                token_expired:
+                  summary: Token expired
+                  value:
+                    message: Token expired
+                no_token:
+                  summary: No token provided
+                  value:
+                    message: "No token provided"
+                user_not_found:
+                  summary: User data not found
+                  value:
+                    message: "User data not found"
+        "403":
+          description: Forbidden - Access Denied
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You do not have permission to access."
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Internal server error"
+
+    post:
+      summary: Add a new product
+      description: Adds a product to the database and send notification to user with notification enabled.
+      security:
+        - authorization: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                price:
+                  type: number
+                  format: float
+                quantity:
+                  type: integer
+              required:
+                - name
+                - description
+                - price
+                - quantity
+              example:
+                name: "New Product"
+                description: "Description of the new product"
+                price: 99.99
+                quantity: 10
+      responses:
+        "201":
+          description: Product added successfully and notification sent
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Product added successfully and notification sent."
+                  products:
+                    type: object
+                    properties:
+                      product_name:
+                        type: string
+                      description:
+                        type: string
+                      price:
+                        type: number
+                        format: float
+                      quantity:
+                        type: integer
+              example:
+                message: "Product added successfully and notification sent."
+                products:
+                  product_name: "New Product"
+                  description: "Description of the new product"
+                  price: 99.99
+                  quantity: 10
+        "400":
+          description: Bad request - Missing request fields
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Name, description, price, quantity is required"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              examples:
+                unauthorized:
+                  summary: Unauthorized
+                  value:
+                    message: "Unauthorized"
+                token_expired:
+                  summary: Token expired
+                  value:
+                    message: Token expired
+                no_token:
+                  summary: No token provided
+                  value:
+                    message: "No token provided"
+                user_not_found:
+                  summary: User data not found
+                  value:
+                    message: "User data not found"
+        "403":
+          description: Forbidden - Access Denied
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You do not have permission to access."
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              examples:
+                email_error:
+                  summary: Email Sending error
+                  value:
+                    message: "Error sending email"
+                server_error:
+                  summary: Internal server error
+                  value:
+                    message: "Internal server error"
+
+  /products/{ProId}:
+    put:
+      summary: Edit an existing product
+      description: Updates a product's details by its ID.
+      security:
+        - authorization: []
+      parameters:
+        - in: path
+          name: ProId
+          required: true
+          schema:
+            type: integer
+          description: ID of the product to be edited
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                price:
+                  type: integer
+                  format: float
+                quantity:
+                  type: integer
+              required:
+                - name
+                - description
+                - price
+                - quantity
+              example:
+                name: "Updated Product Name"
+                description: "Updated description of the product"
+                price: 120
+                quantity: 5
+      responses:
+        "200":
+          description: Product updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Product upadated successfully"
+                  products:
+                    type: object
+                    properties:
+                      product_name:
+                        type: string
+                      description:
+                        type: string
+                      price:
+                        type: number
+                        format: float
+                      quantity:
+                        type: integer
+              example:
+                message: "Product updated successfully"
+                product:
+                  product_name: "Updated product name"
+                  description: "Update description of the product"
+                  price: 120
+                  quantity: 5
+        "400":
+          description: Bad request - Missing rrequired fields
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Name, description, price or quantity is required"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              examples:
+                unauthorized:
+                  summary: Unauthorized
+                  value:
+                    message: "Unauthorized"
+                token_expired:
+                  summary: Token expired
+                  value:
+                    message: Token expired
+                no_token:
+                  summary: No token provided
+                  value:
+                    message: "No token provided"
+                user_not_found:
+                  summary: User data not found
+                  value:
+                    message: "User data not found"
+        "403":
+          description: Forbidden - Access Denied
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You do not have permission to access."
+        "404":
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Product not found"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Internal server error"
+
+    delete:
+      summary: Delete a product by ID
+      description: "Delete a product from the database based on the provided product ID"
+      security:
+        - authorization: []
+      parameters:
+        - in: path
+          name: ProId
+          required: true
+          schema:
+            type: integer
+          description: The ID of the product to be deleted
+      responses:
+        "200":
+          description: Product delete successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Product delete successfully"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              examples:
+                unauthorized:
+                  summary: Unauthorized
+                  value:
+                    message: "Unauthorized"
+                token_expired:
+                  summary: Token expired
+                  value:
+                    message: Token expired
+                no_token:
+                  summary: No token provided
+                  value:
+                    message: "No token provided"
+                user_not_found:
+                  summary: User data not found
+                  value:
+                    message: "User data not found"
+        "403":
+          description: Forbidden - Access Denied
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You do not have permission to access."
+        "404":
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Product not found"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Internal server error"
+
+  /setNotification:
+    post:
+      summary: Update notification setting for a user
+      security:
+        - authorization: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                notification_enabled:
+                  type: boolean
+                  description: "Enable or disable notification for the user."
+            example:
+              notification_enabled: "on"
+      responses:
+        "200":
+          description: Notification setting update successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: "Notification setting updated successfully"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: "Invalid value for notification_enabled. Only on or off is allowed."
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              examples:
+                unauthorized:
+                  summary: Unauthorized
+                  value:
+                    message: "Unauthorized"
+                token_expired:
+                  summary: Token expired
+                  value:
+                    message: Token expired
+                no_token:
+                  summary: No token provided
+                  value:
+                    message: "No token provided"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: "User not found"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: "Internal server error"
+
+  /carts:
+    post:
+      summary: Create a new shopping cart for the user
+      security:
+        - authorization: []
+      responses:
+        "201":
+          description: Cart created successfully
+          content:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+              example:
+                message: "Cart created successfully"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              examples:
+                unauthorized:
+                  summary: Unauthorized
+                  value:
+                    message: "Unauthorized"
+                token_expired:
+                  summary: Token expired
+                  value:
+                    message: Token expired
+                no_token:
+                  summary: No token provided
+                  value:
+                    message: "No token provided"
+        "500":
+          description: Internal server error
+          content:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+              example:
+                message: "Internal server error"
+
+  /carts/{cartId}/items:
+    post:
+      summary: Add an item to the cart
+      security:
+        - authorization: []
+      description: Adds a specified product with a quantity to the cart.
+      parameters:
+        - in: path
+          name: cartId
+          required: true
+          schema:
+            type: integer
+          description: ID of the cart to witch the item will be added
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                product_id:
+                  type: integer
+                  description: ID of the product to add to the cart
+                quantity:
+                  type: integer
+                  description: Quantity of the product
+              required:
+                - product_id
+                - quantity
+              example:
+                product_id: 1
+                quantity: 2
+      responses:
+        "201":
+          description: Item added to cart successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "Item added to cart successfully"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "Product ID or quantity is required and must be numbers"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              examples:
+                unauthorized:
+                  summary: Unauthorized
+                  value:
+                    message: "Unauthorized"
+                token_expired:
+                  summary: Token expired
+                  value:
+                    message: Token expired
+                no_token:
+                  summary: No token provided
+                  value:
+                    message: "No token provided"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              examples:
+                CartNotFound:
+                  summary: Cart not found
+                  value:
+                    message: "Cart not found"
+                ProductNotFound:
+                  summary: Product not found
+                  value:
+                    message: "Product not found"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "Internal server error"
+
+    get:
+      summary: Get items in a cart
+      security:
+        - authorization: []
+      description: Retrieves all items in the specified cart, including product name, quantity, and price.
+      parameters:
+        - name: cartId
+          in: path
+          required: true
+          description: The ID of the cart to retrieve items from.
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: A list of items in the cart.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    product_name:
+                      type: string
+                      example: "Apple"
+                    quantity:
+                      type: integer
+                      example: 2
+                    price:
+                      type: number
+                      format: float
+                      example: 50.00
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              examples:
+                unauthorized:
+                  summary: Unauthorized
+                  value:
+                    message: "Unauthorized"
+                token_expired:
+                  summary: Token expired
+                  value:
+                    message: Token expired
+                no_token:
+                  summary: No token provided
+                  value:
+                    message: "No token provided"
+        "404":
+          description: Cart not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Cart not found"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Internal server error"
+
+  /carts/{cartId}/items/{itemId}:
+    put:
+      summary: Update item quantity in Cart
+      security:
+        - authorization: []
+      description: Updates the quantity of a specific item in the specificed cart.
+      parameters:
+        - name: cartId
+          in: path
+          required: true
+          description: The ID of the cart.
+          schema:
+            type: integer
+        - name: itemId
+          in: path
+          required: true
+          description: The ID of the item within the item.
+          schema:
+            type: integer
+      requestBody:
+        description: Quantity to update for the item.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quantity:
+                  type: integer
+                  example: 5
+      responses:
+        "200":
+          description: Item quantity updated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Item quantity upadated successfully"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              examples:
+                unauthorized:
+                  summary: Unauthorized
+                  value:
+                    message: "Unauthorized"
+                token_expired:
+                  summary: Token expired
+                  value:
+                    message: Token expired
+                no_token:
+                  summary: No token provided
+                  value:
+                    message: "No token provided"
+        "404":
+          description: Cart or item not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              examples:
+                CartNotFound:
+                  summary: Cart not found
+                  value:
+                    message: "Cart not found"
+                ItemNotFound:
+                  summary: Item not found in cart
+                  value:
+                    message: "Item not found in cart"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Internal server error"
+
+    delete:
+      summary: Remove item from cart
+      security:
+        - authorization: []
+      description: Deletes a specific item from the specified cart.
+      parameters:
+        - name: cartId
+          in: path
+          required: true
+          description: The ID of the cart.
+          schema:
+            type: integer
+        - name: itemId
+          in: path
+          required: true
+          description: The ID of the item to be removed from the cart.
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Item removed from cart successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Item removed from cart successfully"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              examples:
+                unauthorized:
+                  summary: Unauthorized
+                  value:
+                    message: "Unauthorized"
+                token_expired:
+                  summary: Token expired
+                  value:
+                    message: Token expired
+                no_token:
+                  summary: No token provided
+                  value:
+                    message: "No token provided"
+        "404":
+          description: Cart or item not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              examples:
+                CartNotFound:
+                  summary: Cart not found
+                  value:
+                    message: "Cart not found"
+                ItemNotFound:
+                  summary: Item not found in cart
+                  value:
+                    message: "Item not found in cart"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Internal server error"
